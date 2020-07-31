@@ -1,19 +1,27 @@
-import speech_recognition as sr
+from vosk import Model, KaldiRecognizer
+import os
 
-# prints all available devices in array format
-# only used when setting up the mic object
-# array = sr.Microphone.list_microphone_names()
-# for x in array:
-#     print(x)
+if not os.path.exists("model"):
+    print("Please download the model from https://github.com/alphacep/vosk-api/blob/master/doc/models.md and unpack "
+          "as 'model' in the current folder.")
+    exit(1)
 
-rec = sr.Recognizer()
-# device_index is the index of your microphone
-# in the output of the previous array
-mic = sr.Microphone(device_index=1)
+import pyaudio
 
-with mic as source:
-    audio = rec.listen(source)
-print(rec.recognize_google(audio))
+model = Model("model")
+rec = KaldiRecognizer(model, 16000)
 
+p = pyaudio.PyAudio()
+stream = p.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, frames_per_buffer=8000)
+stream.start_stream()
 
+while True:
+    data = stream.read(4000)
+    if len(data) == 0:
+        break
+    if rec.AcceptWaveform(data):
+        print(rec.Result())
+    else:
+        print(rec.PartialResult())
 
+print(rec.FinalResult())
