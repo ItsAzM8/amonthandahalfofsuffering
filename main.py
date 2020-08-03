@@ -22,4 +22,5 @@ while True:
     data = stream.read(4000, exception_on_overflow=False)
     if rec.AcceptWaveform(data):
         result = json.loads(rec.Result())
+        print("hello")
         print(result["text"])
