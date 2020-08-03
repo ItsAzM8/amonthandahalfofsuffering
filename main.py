@@ -19,7 +19,7 @@ stream = p.open(format=pyaudio.paInt16, channels=1, rate=RATE, input=True, frame
 stream.start_stream()
 
 while True:
-    data = stream.read(4000)
+    data = stream.read(4000, exception_on_overflow=False)
     if rec.AcceptWaveform(data):
         result = json.loads(rec.Result())
         print(result["text"])
