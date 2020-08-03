@@ -3,7 +3,7 @@ import os
 import json
 import pyaudio
 
-RATE = 44100
+RATE = 16000
 
 if not os.path.exists("model"):
     print("Please download the model from https://github.com/alphacep/vosk-api/blob/master/doc/models.md and unpack "
@@ -22,5 +22,4 @@ while True:
     data = stream.read(4000, exception_on_overflow=False)
     if rec.AcceptWaveform(data):
         result = json.loads(rec.Result())
-        print("hello")
         print(result["text"])
